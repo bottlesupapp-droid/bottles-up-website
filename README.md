@@ -1,73 +1,153 @@
-# Welcome to your Lovable project
+# BottlesUp Website
 
-## Project info
+**Toronto's Premier Nightlife App Landing Page**
 
-**URL**: https://lovable.dev/projects/1eb61208-3c69-4873-a5d0-b974676ec513
+A professional landing page for BottlesUp - the ultimate VIP table booking and digital ticket platform for Toronto's hottest venues.
 
-## How can I edit this code?
+## 🌟 Features
 
-There are several ways of editing your application.
+- **Loading Video**: Custom loading experience with your brand video
+- **VIP Waitlist Signup**: Mailchimp integration for email collection
+- **SEO Optimized**: Complete meta tags, structured data, and sitemap
+- **Mobile-First Design**: Responsive design that works on all devices
+- **PWA Ready**: Installable web app with manifest and service worker ready
+- **Professional Animations**: Smooth transitions and hover effects
+- **Toronto-Focused**: Location-specific content for Toronto nightlife
 
-**Use Lovable**
+## 🚀 Quick Start
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/1eb61208-3c69-4873-a5d0-b974676ec513) and start prompting.
+### Development
 
-Changes made via Lovable will be committed automatically to this repo.
+```bash
+# Install dependencies
+npm install
 
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Start development server
 npm run dev
+
+# Start with backend (for Mailchimp integration)
+npm run dev:full
 ```
 
-**Edit a file directly in GitHub**
+Visit `http://localhost:8081` to see your site.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### Build for Production
 
-**Use GitHub Codespaces**
+```bash
+npm run build
+npm run preview
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## 📁 Project Structure
 
-## What technologies are used for this project?
+```
+bottlesup-website/
+├── public/
+│   ├── app_logo.svg          # Your BottlesUp logo (add this)
+│   ├── loading_video.mp4     # Your loading video (add this)
+│   ├── sitemap.xml          # SEO sitemap
+│   ├── robots.txt           # Search engine instructions
+│   └── manifest.json        # PWA manifest
+├── src/
+│   ├── components/          # React components
+│   │   ├── Header.tsx       # Navigation with logo
+│   │   ├── Hero.tsx         # Main hero section
+│   │   ├── Features.tsx     # Core features showcase
+│   │   ├── EmailCollection.tsx # Waitlist signup
+│   │   ├── Footer.tsx       # Footer with contact info
+│   │   └── LoadingScreen.tsx # Video loading screen
+│   ├── pages/
+│   │   └── Index.tsx        # Main landing page
+│   └── lib/
+│       └── mailchimp.ts     # Mailchimp integration
+├── server.js               # Express server for Mailchimp API
+├── vercel.json            # Vercel deployment config
+└── DEPLOYMENT.md          # Deployment guide
+```
 
-This project is built with:
+## 🎨 Customization
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+### Adding Your Assets
 
-## How can I deploy this project?
+1. **Logo**: Add `app_logo.svg` to the `public` folder
+2. **Loading Video**: Add `loading_video.mp4` to the `public` folder
+3. **Branding**: Update colors in `src/index.css` if needed
 
-Simply open [Lovable](https://lovable.dev/projects/1eb61208-3c69-4873-a5d0-b974676ec513) and click on Share -> Publish.
+### Mailchimp Setup
 
-## Can I connect a custom domain to my Lovable project?
+1. Follow the guide in `MAILCHIMP_SETUP.md`
+2. Create a `.env` file with your Mailchimp credentials
+3. Start the backend server with `npm run server`
 
-Yes, you can!
+## 🌐 Deployment
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+### Deploy to Vercel
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+1. **Push to GitHub**:
+   ```bash
+   git add .
+   git commit -m "Ready for deployment"
+   git push origin main
+   ```
+
+2. **Deploy to Vercel**:
+   - Visit [vercel.com](https://vercel.com)
+   - Import your GitHub repository
+   - Configure build settings (automatically detected)
+   - Deploy!
+
+3. **Custom Domain** (Optional):
+   - Add your domain in Vercel dashboard
+   - Update DNS settings as instructed
+
+See `DEPLOYMENT.md` for detailed deployment instructions.
+
+## 📊 SEO Features
+
+- ✅ **Meta Tags**: Complete Open Graph and Twitter Cards
+- ✅ **Structured Data**: Schema.org markup for better search results
+- ✅ **Sitemap**: XML sitemap for search engines
+- ✅ **Robots.txt**: Search engine crawling instructions
+- ✅ **Canonical URLs**: Proper URL canonicalization
+- ✅ **Mobile Optimization**: Mobile-first responsive design
+
+## 📱 Progressive Web App
+
+- ✅ **Web App Manifest**: Installable on mobile devices
+- ✅ **Theme Colors**: Branded colors for mobile browsers
+- ✅ **App Shortcuts**: Quick access to key sections
+- ✅ **Offline Ready**: Ready for service worker implementation
+
+## 🔧 Technical Stack
+
+- **React 18** with TypeScript
+- **Vite** for fast development and building
+- **Tailwind CSS** for styling
+- **Shadcn/ui** for UI components
+- **React Router** for navigation
+- **Mailchimp API** for email collection
+- **Express.js** for backend API
+
+## 📧 Contact & Support
+
+For questions about the BottlesUp website:
+- **Email**: hello@bottlesup.to
+- **Developers**: dev@bottlesup.to
+
+For venue partnerships and promoter inquiries:
+- **Partners**: partners@bottlesup.to
+- **Promoters**: promoters@bottlesup.to
+
+## 🎯 Toronto Nightlife
+
+This website is specifically designed for Toronto's vibrant nightlife scene, featuring:
+- Entertainment District venues
+- King Street West hotspots  
+- Queen Street West locations
+- Financial District bars
+- Yorkville lounges
+- And more across the GTA!
+
+---
+
+**Built for Toronto's Nightlife Revolution** 🍾

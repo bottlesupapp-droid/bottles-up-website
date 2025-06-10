@@ -1,14 +1,27 @@
+User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: https://bottlesup.to/sitemap.xml
+
+# Disallow paths that shouldn't be indexed
+Disallow: /api/
+Disallow: /_next/
+Disallow: /admin/
+Disallow: /private/
+
+# Allow specific bots
 User-agent: Googlebot
 Allow: /
 
 User-agent: Bingbot
 Allow: /
 
-User-agent: Twitterbot
-Allow: /
-
 User-agent: facebookexternalhit
 Allow: /
 
-User-agent: *
+User-agent: Twitterbot
 Allow: /
+
+# Crawl-delay for courtesy
+Crawl-delay: 1

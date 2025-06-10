@@ -1,23 +1,22 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Dark theme design system for Bottles Up */
+/* Professional dark theme design system for Bottles Up */
 
 @layer base {
   :root {
-    --background: 222 84% 4.9%;
+    --background: 0 0% 0%; /* Pure black */
     --foreground: 210 40% 98%;
 
-    --card: 222 84% 6%;
+    --card: 0 0% 3.9%; /* Very dark gray */
     --card-foreground: 210 40% 98%;
 
-    --popover: 222 84% 4.9%;
+    --popover: 0 0% 3.9%;
     --popover-foreground: 210 40% 98%;
 
     --primary: 25 95% 53%;
-    --primary-foreground: 222 84% 4.9%;
+    --primary-foreground: 0 0% 0%;
 
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
@@ -26,7 +25,7 @@
     --muted-foreground: 215 20.2% 65.1%;
 
     --accent: 25 95% 53%;
-    --accent-foreground: 222 84% 4.9%;
+    --accent-foreground: 0 0% 0%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
@@ -45,7 +44,31 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans;
+    @apply bg-black text-foreground font-sans;
+    background: linear-gradient(180deg, #000000 0%, #0a0a0a 50%, #000000 100%);
+    min-height: 100vh;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #000;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #F7931E 0%, #FF6B35 100%);
   }
 }
 
@@ -55,7 +78,11 @@
   }
   
   .bg-gradient-dark {
-    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #000000 100%);
+  }
+  
+  .bg-gradient-dark-subtle {
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
   }
   
   .text-gradient {
@@ -63,5 +90,54 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+  }
+
+  .text-gradient-white {
+    background: linear-gradient(135deg, #ffffff 0%, #d1d5db 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .glass-effect {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .glow-orange {
+    box-shadow: 0 0 20px rgba(255, 107, 53, 0.3);
+  }
+
+  .glow-orange-strong {
+    box-shadow: 0 0 40px rgba(255, 107, 53, 0.5);
+  }
+
+  /* Animation utilities */
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .animate-pulse-slow {
+    animation: pulse 3s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  /* Professional hover effects */
+  .hover-lift {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 40px rgba(255, 107, 53, 0.2);
   }
 }
