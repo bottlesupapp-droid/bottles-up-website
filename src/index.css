@@ -3,36 +3,36 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Dark charcoal theme design system for Bottles Up */
+/* Dark theme design system for Bottles Up */
 
 @layer base {
   :root {
-    --background: 220 13% 8%;
+    --background: 222 84% 4.9%;
     --foreground: 210 40% 98%;
 
-    --card: 220 13% 10%;
+    --card: 222 84% 6%;
     --card-foreground: 210 40% 98%;
 
-    --popover: 220 13% 8%;
+    --popover: 222 84% 4.9%;
     --popover-foreground: 210 40% 98%;
 
     --primary: 25 95% 53%;
-    --primary-foreground: 220 13% 8%;
+    --primary-foreground: 222 84% 4.9%;
 
-    --secondary: 220 13% 15%;
+    --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
 
-    --muted: 220 13% 15%;
+    --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
 
     --accent: 25 95% 53%;
-    --accent-foreground: 220 13% 8%;
+    --accent-foreground: 222 84% 4.9%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 220 13% 18%;
-    --input: 220 13% 18%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
     --ring: 25 95% 53%;
 
     --radius: 0.5rem;
@@ -45,8 +45,7 @@
   }
 
   body {
-    @apply bg-background text-foreground;
-    font-family: 'Inter', sans-serif;
+    @apply bg-background text-foreground font-sans;
   }
 }
 
@@ -59,51 +58,10 @@
     background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
   }
   
-  .bg-gradient-charcoal {
-    background: linear-gradient(135deg, #1e1e1e 0%, #2a2a2a 100%);
-  }
-  
   .text-gradient {
     background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-  }
-  
-  .font-display {
-    font-family: 'Playfair Display', serif;
-  }
-  
-  .glow-orange {
-    box-shadow: 0 0 20px rgba(255, 107, 53, 0.3);
-  }
-  
-  .glow-orange-lg {
-    box-shadow: 0 0 40px rgba(255, 107, 53, 0.4);
-  }
-}
-
-@layer components {
-  .animated-border {
-    position: relative;
-    background: linear-gradient(135deg, #1e1e1e 0%, #2a2a2a 100%);
-  }
-  
-  .animated-border::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    padding: 2px;
-    background: linear-gradient(45deg, #FF6B35, #F7931E, #FF6B35);
-    border-radius: inherit;
-    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    mask-composite: xor;
-    animation: border-spin 3s linear infinite;
-  }
-  
-  @keyframes border-spin {
-    to {
-      transform: rotate(360deg);
-    }
   }
 }
