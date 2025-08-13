@@ -1,0 +1,49 @@
+{
+  "name": "BottlesUp - Toronto's Premier Nightlife App",
+  "short_name": "BottlesUp",
+  "description": "Skip the lines and elevate your Toronto nightlife experience. Book VIP tables, get digital tickets, and discover exclusive events.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#FF6B35",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "en-CA",
+  "categories": ["entertainment", "lifestyle", "social"],
+  "icons": [
+    {
+      "src": "/app_logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Join Waitlist",
+      "short_name": "Waitlist",
+      "description": "Join the VIP waitlist for early access",
+      "url": "/#waitlist",
+      "icons": [
+        {
+          "src": "/app_logo.svg",
+          "sizes": "any",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "View Features",
+      "short_name": "Features",
+      "description": "See what BottlesUp offers",
+      "url": "/#features",
+      "icons": [
+        {
+          "src": "/app_logo.svg",
+          "sizes": "any",
+          "type": "image/svg+xml"
+        }
+      ]
+    }
+  ]
+} 
