@@ -25,6 +25,7 @@ export interface Database {
           email: string;
           created_at: string;
         }>;
+        Relationships: [];
       };
       site_events: {
         Row: {
@@ -51,6 +52,7 @@ export interface Database {
           start_date: string;
         };
         Update: Partial<Database['public']['Tables']['site_events']['Row']>;
+        Relationships: [];
       };
       site_ticket_tiers: {
         Row: {
@@ -71,6 +73,7 @@ export interface Database {
           capacity: number;
         };
         Update: Partial<Database['public']['Tables']['site_ticket_tiers']['Row']>;
+        Relationships: [];
       };
       site_orders: {
         Row: {
@@ -100,6 +103,7 @@ export interface Database {
           amount_total_cents: number;
         };
         Update: Partial<Database['public']['Tables']['site_orders']['Row']>;
+        Relationships: [];
       };
       vip_emails: {
         Row: {
@@ -115,6 +119,7 @@ export interface Database {
           email: string;
         };
         Update: Partial<Database['public']['Tables']['vip_emails']['Row']>;
+        Relationships: [];
       };
       site_content: {
         Row: {
@@ -134,7 +139,12 @@ export interface Database {
         };
         Insert: Partial<Database['public']['Tables']['site_content']['Row']>;
         Update: Partial<Database['public']['Tables']['site_content']['Row']>;
+        Relationships: [];
       };
     };
+    Views: { [_ in never]: never };
+    Functions: { [_ in never]: never };
+    Enums: { [_ in never]: never };
+    CompositeTypes: { [_ in never]: never };
   };
 }

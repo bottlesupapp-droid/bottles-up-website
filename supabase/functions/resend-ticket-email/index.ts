@@ -73,7 +73,7 @@ Deno.serve(async (req: Request) => {
     });
 
     if (!result.sent) {
-      return json({ error: 'Email provider failed to send - check RESEND_API_KEY is configured' }, 500);
+      return json({ error: result.error ?? 'Email provider failed to send' }, 500);
     }
 
     await supabase.from('site_orders').update({ ticket_sent_at: new Date().toISOString() }).eq('id', order_id);

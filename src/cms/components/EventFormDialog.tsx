@@ -22,6 +22,7 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/lib/supabase';
 import { uploadEventMedia } from '@/lib/uploadEventMedia';
 import type { Database, EventStatus } from '@/types/database';
+import DateTimePicker from './DateTimePicker';
 
 type EventRow = Database['public']['Tables']['site_events']['Row'];
 type TierRow = Database['public']['Tables']['site_ticket_tiers']['Row'];
@@ -121,7 +122,7 @@ const EventFormDialog = ({ event, open, onOpenChange, onSaved }: EventFormDialog
     setForm((prev) => {
       const next = { ...prev, [key]: value };
       // Auto-generate slug if title changes and user hasn't manually edited slug
-      if (key === 'title' && !slugManual && value) {
+      if (key === 'title' && !slugManual && typeof value === 'string' && value) {
         next.slug = generateSlug(value);
       }
       return next;
@@ -165,7 +166,7 @@ const EventFormDialog = ({ event, open, onOpenChange, onSaved }: EventFormDialog
     setSaving(true);
     try {
       const totalCapacity = tiers.reduce((sum, t) => sum + (parseInt(t.capacity, 10) || 0), 0);
-      const payload = {
+      const payload: Database['public']['Tables']['site_events']['Insert'] = {
         title: form.title,
         description: form.description,
         venue_name: form.venue_name,
@@ -187,6 +188,7 @@ const EventFormDialog = ({ event, open, onOpenChange, onSaved }: EventFormDialog
       } else {
         const { data, error } = await supabase.from('site_events').insert(payload).select('id').single();
         if (error) throw error;
+        if (!data?.id) throw new Error('Failed to create event');
         eventId = data.id;
       }
 
@@ -199,7 +201,7 @@ const EventFormDialog = ({ event, open, onOpenChange, onSaved }: EventFormDialog
 
       for (const tier of tiers) {
         if (!tier.name || !tier.priceDollars || !tier.capacity) continue;
-        const tierPayload = {
+        const tierPayload: Database['public']['Tables']['site_ticket_tiers']['Insert'] = {
           event_id: eventId!,
           name: tier.name,
           price_cents: Math.round(parseFloat(tier.priceDollars) * 100),
@@ -268,19 +270,11 @@ const EventFormDialog = ({ event, open, onOpenChange, onSaved }: EventFormDialog
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label>Start Date/Time</Label>
-              <Input
-                type="datetime-local"
-                value={form.start_date}
-                onChange={(e) => updateField('start_date', e.target.value)}
-              />
+              <DateTimePicker value={form.start_date} onChange={(v) => updateField('start_date', v)} placeholder="Select start date & time" />
             </div>
             <div className="space-y-2">
               <Label>End Date/Time (optional)</Label>
-              <Input
-                type="datetime-local"
-                value={form.end_date}
-                onChange={(e) => updateField('end_date', e.target.value)}
-              />
+              <DateTimePicker value={form.end_date} onChange={(v) => updateField('end_date', v)} placeholder="Select end date & time" />
             </div>
           </div>
 

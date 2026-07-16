@@ -23,7 +23,7 @@ export async function sendTicketEmail(opts: {
 }) {
   if (!resendApiKey) {
     console.warn('RESEND_API_KEY not set - skipping ticket email send');
-    return { sent: false };
+    return { sent: false, error: 'RESEND_API_KEY not set' };
   }
 
   const formattedDate = new Date(opts.startDate).toLocaleString('en-US', {
@@ -65,8 +65,9 @@ export async function sendTicketEmail(opts: {
   });
 
   if (!res.ok) {
-    console.error('Resend send failed:', await res.text());
-    return { sent: false };
+    const body = await res.text();
+    console.error('Resend send failed:', body);
+    return { sent: false, error: body || `Resend request failed (${res.status})` };
   }
 
   return { sent: true };

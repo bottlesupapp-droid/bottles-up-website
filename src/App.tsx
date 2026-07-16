@@ -46,7 +46,7 @@ const App = () => {
             <Route path="/booking/cancel" element={<BookingCancel />} />
             <Route path="/cms/login" element={<CmsLogin />} />
             <Route
-              path="/cms"
+              path="/cms/*"
               element={
                 <RequireCmsAuth>
                   <CmsLayout />

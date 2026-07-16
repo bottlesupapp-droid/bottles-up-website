@@ -83,34 +83,38 @@ Deno.serve(async (req: Request) => {
       return new Response('ok', { status: 200 });
     }
 
-    // Idempotent: Stripe retries webhooks, and a ticket must never be generated/emailed twice.
     if (order.ticket_sent_at) {
       return new Response('ok', { status: 200 });
     }
 
-    const ticketCode = generateTicketCode();
-    const qrDataUrl = await QRCode.toDataURL(ticketCode, { width: 400, margin: 1 });
+    const ticketCode = order.ticket_code ?? generateTicketCode();
+    const alreadyPaid = order.status === 'paid';
 
-    const { error: updateError } = await supabase
-      .from('site_orders')
-      .update({
-        status: 'paid',
-        stripe_payment_intent_id:
-          typeof session.payment_intent === 'string' ? session.payment_intent : session.payment_intent?.id,
-        ticket_code: ticketCode,
-        ticket_sent_at: new Date().toISOString(),
-      })
-      .eq('id', orderId);
+    if (!alreadyPaid || !order.ticket_code) {
+      const { error: updateError } = await supabase
+        .from('site_orders')
+        .update({
+          status: 'paid',
+          stripe_payment_intent_id:
+            typeof session.payment_intent === 'string' ? session.payment_intent : session.payment_intent?.id,
+          ticket_code: ticketCode,
+        })
+        .eq('id', orderId);
 
-    if (updateError) {
-      console.error('Failed to update order after payment:', updateError);
-      return new Response('ok', { status: 200 });
+      if (updateError) {
+        console.error('Failed to update order after payment:', updateError);
+        return new Response('ok', { status: 200 });
+      }
+
+      if (!alreadyPaid) {
+        await supabase.rpc('increment_tier_sold', { p_tier_id: order.tier_id, p_qty: order.quantity });
+      }
     }
 
-    await supabase.rpc('increment_tier_sold', { p_tier_id: order.tier_id, p_qty: order.quantity });
+    const qrDataUrl = await QRCode.toDataURL(ticketCode, { width: 400, margin: 1 });
 
     const tier = order.ticket_tiers as { name: string; events: { title: string; venue_name: string; start_date: string } };
-    await sendTicketEmail({
+    const email = await sendTicketEmail({
       toEmail: order.customer_email,
       toName: order.customer_name,
       eventTitle: tier.events.title,
@@ -121,6 +125,12 @@ Deno.serve(async (req: Request) => {
       ticketCode,
       qrDataUrl,
     });
+
+    if (email.sent) {
+      await supabase.from('site_orders').update({ ticket_sent_at: new Date().toISOString() }).eq('id', orderId);
+    } else {
+      console.error('Ticket email send failed:', email.error);
+    }
   }
 
   return new Response('ok', { status: 200 });
