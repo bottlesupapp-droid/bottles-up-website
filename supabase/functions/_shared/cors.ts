@@ -1,15 +1,23 @@
-// Public browser-facing functions (vip-subscribe, create-checkout-session) need CORS since
-// they're called directly from the site. Restrict to the real site origin once known via the
-// ALLOWED_ORIGIN secret (comma-separated list); defaults to '*' so nothing breaks before that's set.
-const allowedOrigins = (Deno.env.get('ALLOWED_ORIGIN') ?? '*').split(',').map((o) => o.trim());
+// Public browser-facing functions are called directly from the website, local dev, and
+// preview deployments. CORS is not an auth boundary here, so avoid brittle exact-origin
+// matching that breaks Vercel previews. ALLOWED_ORIGIN still supports explicit allow-lists
+// for custom domains, while localhost and *.vercel.app are allowed automatically.
+const allowedOrigins = (Deno.env.get('ALLOWED_ORIGIN') ?? '')
+  .split(',')
+  .map((o: string) => o.trim())
+  .filter(Boolean);
+
+function isPreviewOrLocalOrigin(origin: string) {
+  return /^https?:\/\/localhost(?::\d+)?$/.test(origin) || /^https:\/\/.*\.vercel\.app$/.test(origin);
+}
 
 export function corsHeadersFor(req: Request) {
   const origin = req.headers.get('origin') ?? '';
-  const allowOrigin = allowedOrigins.includes('*')
+  const allowOrigin = !origin
     ? '*'
-    : allowedOrigins.includes(origin)
+    : allowedOrigins.includes('*') || allowedOrigins.includes(origin) || isPreviewOrLocalOrigin(origin)
       ? origin
-      : allowedOrigins[0];
+      : allowedOrigins[0] ?? '*';
 
   return {
     'Access-Control-Allow-Origin': allowOrigin,

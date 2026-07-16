@@ -2,6 +2,10 @@ import { createClient } from 'npm:@supabase/supabase-js@2';
 import Stripe from 'npm:stripe@17';
 import { corsHeadersFor, handleOptions } from '../_shared/cors.ts';
 
+function isPreviewOrLocalOrigin(origin: string) {
+  return /^https?:\/\/localhost(?::\d+)?$/.test(origin) || /^https:\/\/.*\.vercel\.app$/.test(origin);
+}
+
 Deno.serve(async (req: Request) => {
   const preflight = handleOptions(req);
   if (preflight) return preflight;
@@ -101,7 +105,7 @@ Deno.serve(async (req: Request) => {
     // Origin header can't redirect customers to an arbitrary site. SITE_URL is the fallback.
     const origin = req.headers.get('origin') ?? '';
     const allowedOrigins = (Deno.env.get('ALLOWED_ORIGIN') ?? '').split(',').map((o: string) => o.trim());
-    const siteUrl = allowedOrigins.includes(origin)
+    const siteUrl = allowedOrigins.includes(origin) || isPreviewOrLocalOrigin(origin)
       ? origin
       : (Deno.env.get('SITE_URL') ?? 'http://localhost:5173');
 
