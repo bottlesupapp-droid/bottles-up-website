@@ -100,7 +100,7 @@ const PopularEvents = () => {
 
                 <div className="flex gap-2">
                   <Button asChild variant="outline" className="flex-1 border-border">
-                    <Link to={`/events/${event.id}`}>
+                    <Link to={`/events/${(event as any).slug || event.id}`}>
                       <Info className="mr-1.5 h-4 w-4" />
                       Details
                     </Link>

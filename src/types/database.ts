@@ -4,6 +4,7 @@
 
 export type EventStatus = 'draft' | 'published';
 export type OrderStatus = 'pending' | 'paid' | 'failed' | 'refunded';
+export type PaymentsMode = 'test' | 'live';
 
 export interface Database {
   public: {
@@ -29,6 +30,7 @@ export interface Database {
         Row: {
           id: string;
           title: string;
+          slug: string | null;
           description: string;
           venue_name: string;
           address: string | null;
@@ -127,6 +129,7 @@ export interface Database {
           footer_tagline: string | null;
           hero_headline: string | null;
           hero_subtext: string | null;
+          payments_mode: PaymentsMode;
           updated_at: string;
         };
         Insert: Partial<Database['public']['Tables']['site_content']['Row']>;

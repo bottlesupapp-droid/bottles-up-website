@@ -18,5 +18,6 @@ export const SITE_CONTENT_DEFAULTS: SiteContent = {
     "Toronto's premier nightlife app for VIP bookings and digital tickets. Elevating your night out experience across the city.",
   hero_headline: null,
   hero_subtext: null,
+  payments_mode: 'test',
   updated_at: '',
 };

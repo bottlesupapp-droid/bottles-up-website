@@ -18,16 +18,32 @@ const EventDetail = () => {
   useEffect(() => {
     if (!id) return;
     setLoading(true);
-    supabase
-      .from('site_events')
-      .select('*, ticket_tiers:site_ticket_tiers(*)')
-      .eq('id', id)
-      .eq('status', 'published')
-      .maybeSingle()
-      .then(({ data }) => {
-        setEvent(data as EventWithTiers | null);
-        setLoading(false);
-      });
+    
+    // Try by slug first, then by id
+    const loadEvent = async () => {
+      // First try with slug
+      let { data } = await supabase
+        .from('site_events')
+        .select('*, ticket_tiers:site_ticket_tiers(*)')
+        .eq('slug', id)
+        .eq('status', 'published')
+        .maybeSingle();
+      
+      if (!data) {
+        // If no event by slug, try id
+        ({ data } = await supabase
+          .from('site_events')
+          .select('*, ticket_tiers:site_ticket_tiers(*)')
+          .eq('id', id)
+          .eq('status', 'published')
+          .maybeSingle());
+      }
+      
+      setEvent(data as EventWithTiers | null);
+      setLoading(false);
+    };
+    
+    loadEvent();
   }, [id]);
 
   if (loading) {

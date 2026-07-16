@@ -2,6 +2,13 @@ import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
@@ -113,6 +120,29 @@ const CmsContent = () => {
           <div className="space-y-2">
             <Label className="text-gray-300">Hero Subtext (optional override)</Label>
             <Textarea {...field('hero_subtext')} rows={3} />
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card className="border-gray-800 bg-gray-900/50">
+        <CardHeader>
+          <CardTitle className="text-white">Payments</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Label className="text-gray-300">Payment Mode</Label>
+            <Select
+              value={form.payments_mode ?? 'test'}
+              onValueChange={(value) => setForm((prev) => ({ ...prev, payments_mode: value as SiteContent['payments_mode'] }))}
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="test">Test</SelectItem>
+                <SelectItem value="live">Live</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </CardContent>
       </Card>

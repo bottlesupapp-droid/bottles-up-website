@@ -2,13 +2,6 @@ import { createClient } from 'npm:@supabase/supabase-js@2';
 import Stripe from 'npm:stripe@17';
 import { corsHeadersFor, handleOptions } from '../_shared/cors.ts';
 
-// TEMP: verification pass only - using the shared project's test_SK instead of the live
-// STRIPE_SECRET_KEY so this can be exercised end-to-end without risking a live charge.
-// Reverted back to STRIPE_SECRET_KEY before this is left deployed.
-const stripe = new Stripe(Deno.env.get('test_SK')!, {
-  apiVersion: '2024-06-20',
-});
-
 Deno.serve(async (req: Request) => {
   const preflight = handleOptions(req);
   if (preflight) return preflight;
@@ -36,6 +29,28 @@ Deno.serve(async (req: Request) => {
       Deno.env.get('SUPABASE_URL')!,
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
     );
+
+    const { data: content } = await supabase
+      .from('site_content')
+      .select('payments_mode')
+      .eq('id', 1)
+      .maybeSingle();
+    const paymentsMode = content?.payments_mode === 'live' ? 'live' : 'test';
+
+    const stripeSecretKey =
+      paymentsMode === 'live'
+        ? (Deno.env.get('STRIPE_SECRET_KEY_LIVE') ?? Deno.env.get('STRIPE_SECRET_KEY'))
+        : (Deno.env.get('STRIPE_SECRET_KEY_TEST') ??
+          Deno.env.get('test_SK') ??
+          Deno.env.get('STRIPE_SECRET_KEY'));
+
+    if (!stripeSecretKey) {
+      return json({ error: 'Stripe is not configured' }, 500);
+    }
+
+    const stripe = new Stripe(stripeSecretKey, {
+      apiVersion: '2024-06-20',
+    });
 
     // Re-read the tier + event server-side. The client never gets to say what the price is.
     const { data: tier, error: tierError } = await supabase
@@ -85,7 +100,7 @@ Deno.serve(async (req: Request) => {
     // domain in prod) - but only if that origin is on the CORS allow-list, so a forged
     // Origin header can't redirect customers to an arbitrary site. SITE_URL is the fallback.
     const origin = req.headers.get('origin') ?? '';
-    const allowedOrigins = (Deno.env.get('ALLOWED_ORIGIN') ?? '').split(',').map((o) => o.trim());
+    const allowedOrigins = (Deno.env.get('ALLOWED_ORIGIN') ?? '').split(',').map((o: string) => o.trim());
     const siteUrl = allowedOrigins.includes(origin)
       ? origin
       : (Deno.env.get('SITE_URL') ?? 'http://localhost:5173');

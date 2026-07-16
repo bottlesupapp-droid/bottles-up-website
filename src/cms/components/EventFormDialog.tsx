@@ -40,6 +40,14 @@ interface EventFormDialogProps {
   onSaved: () => void;
 }
 
+const generateSlug = (title: string): string => {
+  return title
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-');
+};
+
 const emptyForm = {
   title: '',
   description: '',
@@ -51,6 +59,7 @@ const emptyForm = {
   status: 'draft' as EventStatus,
   cover_image_url: '' as string | null,
   gallery: [] as string[],
+  slug: '' as string | null,
 };
 
 const toDatetimeLocal = (iso: string | null) => (iso ? iso.slice(0, 16) : '');
@@ -63,6 +72,7 @@ const EventFormDialog = ({ event, open, onOpenChange, onSaved }: EventFormDialog
   const [saving, setSaving] = useState(false);
   const [uploadingCover, setUploadingCover] = useState(false);
   const [uploadingGallery, setUploadingGallery] = useState(false);
+  const [slugManual, setSlugManual] = useState(false);
 
   useEffect(() => {
     if (!open) return;
@@ -79,7 +89,9 @@ const EventFormDialog = ({ event, open, onOpenChange, onSaved }: EventFormDialog
         status: event.status,
         cover_image_url: event.cover_image_url,
         gallery: event.gallery ?? [],
+        slug: (event as any).slug ?? '',
       });
+      setSlugManual(!!(event as any).slug);
 
       supabase
         .from('site_ticket_tiers')
@@ -101,11 +113,19 @@ const EventFormDialog = ({ event, open, onOpenChange, onSaved }: EventFormDialog
       setForm(emptyForm);
       setTiers([{ name: 'General Admission', priceDollars: '', capacity: '' }]);
       setOriginalTierIds([]);
+      setSlugManual(false);
     }
   }, [event, open]);
 
   const updateField = <K extends keyof typeof form>(key: K, value: (typeof form)[K]) =>
-    setForm((prev) => ({ ...prev, [key]: value }));
+    setForm((prev) => {
+      const next = { ...prev, [key]: value };
+      // Auto-generate slug if title changes and user hasn't manually edited slug
+      if (key === 'title' && !slugManual && value) {
+        next.slug = generateSlug(value);
+      }
+      return next;
+    });
 
   const handleCoverUpload = async (file: File) => {
     setUploadingCover(true);
@@ -157,6 +177,7 @@ const EventFormDialog = ({ event, open, onOpenChange, onSaved }: EventFormDialog
         cover_image_url: form.cover_image_url,
         gallery: form.gallery,
         capacity: totalCapacity || null,
+        slug: form.slug || null,
       };
 
       let eventId = event?.id;
@@ -214,6 +235,18 @@ const EventFormDialog = ({ event, open, onOpenChange, onSaved }: EventFormDialog
           <div className="space-y-2">
             <Label>Title</Label>
             <Input value={form.title} onChange={(e) => updateField('title', e.target.value)} />
+          </div>
+
+          <div className="space-y-2">
+            <Label>Slug</Label>
+            <Input
+              value={form.slug ?? ''}
+              onChange={(e) => {
+                updateField('slug', e.target.value);
+                setSlugManual(true);
+              }}
+              placeholder="event-url-slug"
+            />
           </div>
 
           <div className="space-y-2">

@@ -3,12 +3,7 @@ import Stripe from 'npm:stripe@17';
 import QRCode from 'npm:qrcode@1.5.3';
 import { generateTicketCode, sendTicketEmail } from '../_shared/ticketEmail.ts';
 
-const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY')!, {
-  apiVersion: '2024-06-20',
-  httpClient: Stripe.createFetchHttpClient(),
-});
 const cryptoProvider = Stripe.createSubtleCryptoProvider();
-const webhookSecret = Deno.env.get('STRIPE_WEBHOOK_SECRET')!;
 
 Deno.serve(async (req: Request) => {
   if (req.method !== 'POST') {
@@ -18,9 +13,46 @@ Deno.serve(async (req: Request) => {
   const signature = req.headers.get('stripe-signature');
   const body = await req.text();
 
+  const stripeSecretKey =
+    Deno.env.get('STRIPE_SECRET_KEY_LIVE') ??
+    Deno.env.get('STRIPE_SECRET_KEY_TEST') ??
+    Deno.env.get('STRIPE_SECRET_KEY') ??
+    Deno.env.get('test_SK');
+
+  if (!stripeSecretKey) {
+    return new Response('Stripe is not configured', { status: 500 });
+  }
+
+  const stripe = new Stripe(stripeSecretKey, {
+    apiVersion: '2024-06-20',
+    httpClient: Stripe.createFetchHttpClient(),
+  });
+
+  const webhookSecrets = [
+    Deno.env.get('STRIPE_WEBHOOK_SECRET_TEST'),
+    Deno.env.get('STRIPE_WEBHOOK_SECRET_LIVE'),
+    Deno.env.get('STRIPE_WEBHOOK_SECRET'),
+  ].filter((s): s is string => !!s);
+
   let event: Stripe.Event;
   try {
-    event = await stripe.webhooks.constructEventAsync(body, signature!, webhookSecret, undefined, cryptoProvider);
+    let lastError: unknown;
+    let verified: Stripe.Event | null = null;
+
+    for (const secret of webhookSecrets) {
+      try {
+        verified = await stripe.webhooks.constructEventAsync(body, signature!, secret, undefined, cryptoProvider);
+        break;
+      } catch (err) {
+        lastError = err;
+      }
+    }
+
+    if (!verified) {
+      throw lastError ?? new Error('Webhook signature verification failed');
+    }
+
+    event = verified;
   } catch (err) {
     console.error('Webhook signature verification failed:', err);
     return new Response('Invalid signature', { status: 400 });
